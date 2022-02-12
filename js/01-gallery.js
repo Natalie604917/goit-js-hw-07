@@ -1,22 +1,19 @@
 
 
 import { galleryItems } from './gallery-items.js';
-// Change code below this line
-// console.log(galleryItems);
-
-
+// // Change code below this line
 
 console.log(createPictureCard(galleryItems));
 
 const cardsContainer = document.querySelector('.gallery');
 const cardsMarkup = createPictureCard(galleryItems);
 
-cardsContainer.insertAdjacentHTML('beforeend',cardsMarkup);
+cardsContainer.insertAdjacentHTML('beforeend', cardsMarkup);
 
 cardsContainer.addEventListener('click', onCardsContainerClick);
 
-function createPictureCard (galleryItems){
-    return galleryItems.map(({preview, original, description})=>{
+function createPictureCard(galleryItems) {
+  return galleryItems.map(({ preview, original, description }) => {
     return `
 
 <div class="gallery__item">
@@ -30,30 +27,21 @@ function createPictureCard (galleryItems){
   </a>
 </div>
 `;
-})
- .join('');   
+  })
+    .join('');
 }
 
-function onCardsContainerClick (event){
-    if (!event.target.nodeName !==IMG){
-        return;
-    }
-    event.preventDefault();
-    showModal(event.target.dataset.source);
+function onCardsContainerClick(event) {
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
+  event.preventDefault();
+  modalShow(event.target.dataset.source);
 }
-
 
 let instance = null;
-
-
-
-function showModal(src) {
-  const onEscClick = event => {
-    if (event.code === 'Escape') {
-      instance.close();
-    }
-  };
-  const instance = basicLightbox.create(
+function modalShow(src) {
+  instance = basicLightbox.create(
     `
     <div class="modal">
         <img src="${src}" style="height:100vh; display:block"></img>
@@ -61,16 +49,26 @@ function showModal(src) {
 `,
     {
       onShow: instance => {
-        window.addEventListener('keydown', onEscClick);
+        addListener();
       },
       onClose: instance => {
-        window.removeEventListener('keydown', onEscClick);
+        removeListener();
       },
     },
   );
   instance.show();
 }
 
+function addListener() {
+  window.addEventListener('keydown', onEscClick);
+}
 
+function onEscClick(event) {
+  if (event.code === 'Escape') {
+    instance.close();
+  }
+}
 
-
+function removeListener() {
+  window.removeEventListener('keydown', onEscClick);
+}
